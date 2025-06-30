@@ -49,22 +49,22 @@
   </div>
 
   <script>
-  const token = new URLSearchParams(window.location.search).get("token");
-  const message = document.getElementById("message");
+    const token = new URLSearchParams(window.location.search).get("token");
+    const message = document.getElementById("message");
 
-  if (!token) {
-    message.textContent = "Invalid or missing token.";
-  } else {
-    fetch(`/api/auth/verify-email?token=${token}`)
-      .then(res => res.json().then(data => ({ ok: res.ok, data })))
-      .then(({ ok, data }) => {
-        message.textContent = ok ? "✅ Email verified successfully!" : data.msg || "Verification failed.";
-      })
-      .catch(() => {
-        message.textContent = "⚠️ Verification failed due to a server error.";
-      });
-  }
-</script>
-
+    if (!token) {
+      message.textContent = "Missing token";
+    } else {
+      fetch(`/api/auth/verify-email?token=${token}`)
+        .then(res => res.json().then(data => ({ ok: res.ok, data })))
+        .then(({ ok, data }) => {
+          message.textContent = ok ? "✅ " + data.msg : "❌ " + data.msg;
+        })
+        .catch(err => {
+          console.error("Verification failed:", err);
+          message.textContent = "⚠️ Verification failed due to a server error.";
+        });
+    }
+  </script>
 </body>
 </html>
