@@ -1,4 +1,4 @@
-// auth.js
+// auth.js content goes here
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -14,7 +14,7 @@ function isValidPassword(password) {
   return password.length >= 6 && /\d/.test(password) && /[!@#$%^&*]/.test(password);
 }
 
-// Register
+// Register with Email Verification
 router.post("/register", (req, res) => {
   const { username, password } = req.body;
 
@@ -46,36 +46,27 @@ router.post("/register", (req, res) => {
         res.json({ msg: "Registered. Check email for verification." });
       });
     })
-    .catch((err) => {
-      console.error("Registration error:", err);
-      res.status(500).json({ msg: "Server error" });
-    });
+    .catch(() => res.status(500).json({ msg: "Server error" }));
 });
 
-// ✅ Email Verification Backend API
+// Verify Email
 router.get("/verify-email", (req, res) => {
   const { token } = req.query;
-  console.log("Received token:", token);
 
   User.findOne({
     verifyToken: token,
     verifyTokenExpiry: { $gt: Date.now() }
   })
     .then(user => {
-      if (!user) return res.status(400).json({ msg: "Invalid or expired token" });
-
+      if (!user) return res.status(400).send("Invalid or expired token");
       user.isVerified = true;
       user.verifyToken = undefined;
       user.verifyTokenExpiry = undefined;
-
       return user.save().then(() =>
-        res.json({ msg: "Email verified successfully." })
+        res.send(`<h3>Email verified. <a href="/index.html">Login</a></h3>`)
       );
     })
-    .catch(err => {
-      console.error("Verification error:", err);
-      res.status(500).json({ msg: "Verification failed" });
-    });
+    .catch(() => res.status(500).send("Verification failed"));
 });
 
 // Login
@@ -109,7 +100,7 @@ router.post("/forgot-password", (req, res) => {
       const link = `http://localhost:3000/reset-password.html?token=${token}`;
       transporter.sendMail({
         to: username,
-        from: "your-email@gmail.com",
+        from: "c.sec.balls@gmail.com",
         subject: "Reset Password",
         html: `<p><a href="${link}">Reset Password</a></p>`
       });
