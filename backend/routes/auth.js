@@ -1,4 +1,4 @@
-// auth.js content goes here
+// auth.js
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -14,7 +14,7 @@ function isValidPassword(password) {
   return password.length >= 6 && /\d/.test(password) && /[!@#$%^&*]/.test(password);
 }
 
-// Register with Email Verification
+// Register
 router.post("/register", (req, res) => {
   const { username, password } = req.body;
 
@@ -46,27 +46,36 @@ router.post("/register", (req, res) => {
         res.json({ msg: "Registered. Check email for verification." });
       });
     })
-    .catch(() => res.status(500).json({ msg: "Server error" }));
+    .catch((err) => {
+      console.error("Registration error:", err);
+      res.status(500).json({ msg: "Server error" });
+    });
 });
 
-// Verify Email
+// ✅ Email Verification Backend API
 router.get("/verify-email", (req, res) => {
   const { token } = req.query;
+  console.log("Received token:", token);
 
   User.findOne({
     verifyToken: token,
     verifyTokenExpiry: { $gt: Date.now() }
   })
     .then(user => {
-      if (!user) return res.status(400).send("Invalid or expired token");
+      if (!user) return res.status(400).json({ msg: "Invalid or expired token" });
+
       user.isVerified = true;
       user.verifyToken = undefined;
       user.verifyTokenExpiry = undefined;
+
       return user.save().then(() =>
-        res.send(`<h3>Email verified. <a href="/index.html">Login</a></h3>`)
+        res.json({ msg: "Email verified successfully." })
       );
     })
-    .catch(() => res.status(500).send("Verification failed"));
+    .catch(err => {
+      console.error("Verification error:", err);
+      res.status(500).json({ msg: "Verification failed" });
+    });
 });
 
 // Login
