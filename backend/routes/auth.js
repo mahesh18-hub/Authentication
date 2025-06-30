@@ -92,7 +92,8 @@ router.post("/forgot-password", (req, res) => {
   const { username } = req.body;
   const token = crypto.randomBytes(32).toString("hex");
 
-  User.findOne({ username }).then(user => {
+  User.findOne({ username: new RegExp(`^${username}$`, "i") })
+  .then(user => {
     if (!user) return res.status(400).json({ msg: "User not found" });
     user.resetToken = token;
     user.tokenExpiry = Date.now() + 3600000;
