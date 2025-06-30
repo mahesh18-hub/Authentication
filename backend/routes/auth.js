@@ -36,7 +36,7 @@ router.post("/register", (req, res) => {
         verifyTokenExpiry: Date.now() + 3600000
       });
       return newUser.save().then(() => {
-        const link = `http://localhost:3000/verify.html?token=${token}`;
+        const link = `https://authentication-r4mc.onrender.com/verify.html?token=${token}`;
         transporter.sendMail({
           to: username,
           from: "c.sec.balls@gmail.com",
