@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #e0f7fa;
+    }
+    .header {
+      background: #00796b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .content {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      float: right;
+    }
+    button:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Welcome to Your Dashboard</h1>
+    <button onclick="logout()">Logout</button>
+  </div>
+  <div class="content">
+    <p>This is a protected route. Only authenticated users can see this.</p>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!token) location.href = "index.html";
+
+    function logout() {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+      location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
