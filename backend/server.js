@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 app.use("/api/auth", authRoutes);
 
 // MongoDB
-mongoose.connect("mongodb+srv://<your-connection-string>", {
+mongoose.connect("mongodb+srv://maheshburla562:Authentication@cluster0.t3zuxnl.mongodb.net/", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
