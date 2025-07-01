@@ -1,53 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f0f2f5;
       margin: 0;
-      background: #e0f7fa;
+      padding: 0;
     }
+
     .header {
       background: #00796b;
       color: white;
       padding: 20px;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .content {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+
+    .header h1 {
+      margin: 0;
     }
-    button {
+
+    .logout-btn {
       padding: 10px 20px;
       background-color: #f44336;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      float: right;
     }
-    button:hover {
+
+    .logout-btn:hover {
       background-color: #d32f2f;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .container h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .container p {
+      font-size: 16px;
+      color: #555;
     }
   </style>
 </head>
 <body>
+
   <div class="header">
-    <h1>Welcome to Your Dashboard</h1>
-    <button onclick="logout()">Logout</button>
+    <h1>Welcome, <span id="username">User</span></h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
-  <div class="content">
-    <p>This is a protected route. Only authenticated users can see this.</p>
+
+  <div class="container">
+    <h2>Dashboard</h2>
+    <p>This is a protected page. Only authenticated users can view this content.</p>
   </div>
 
   <script>
+    // Get token
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (!token) location.href = "index.html";
+    if (!token) {
+      location.href = "index.html"; // Redirect to login if no token
+    }
+
+    // Decode token to get username
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    const payload = parseJwt(token);
+    if (payload && payload.username) {
+      document.getElementById("username").textContent = payload.username;
+    } else {
+      document.getElementById("username").textContent = "User";
+    }
 
     function logout() {
       localStorage.removeItem("token");
