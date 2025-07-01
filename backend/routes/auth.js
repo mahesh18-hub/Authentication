@@ -81,7 +81,9 @@ router.post("/login", (req, res) => {
 
       bcrypt.compare(password, user.password).then(match => {
         if (!match) return res.status(400).json({ msg: "Invalid credentials" });
-        const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1h" });
+
+        // ⬇️ Include username in JWT payload
+        const token = jwt.sign({ id: user._id, username: user.username }, SECRET, { expiresIn: "1h" });
         res.json({ token });
       });
     })
