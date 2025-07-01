@@ -34,7 +34,8 @@ app.get("*", (req, res) => {
 });
 
 // MongoDB Connection
-mongoose.connect("your-mongodb-uri").then(() => {
+mongoose.connect("mongodb+srv://maheshburla562:Authentication@cluster0.t3zuxnl.mongodb.net/")
+  .then(() => {
   console.log("✅ MongoDB connected");
   app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 }).catch(err => {
